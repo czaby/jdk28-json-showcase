@@ -104,7 +104,7 @@ public final class JsonShowcase {
 
     void patternMatchSection() {
         JsonValue mixed = Json.parse("""
-                { "tid": "42", "count": 7, "ok": true, "note": null }
+                { \"tid\": \"42\", \"count\": 7, \"ok\": true, \"note\": null }
                 """);
 
         out("tid   -> " + asLongFlexible(mixed.get("tid")));
@@ -114,7 +114,7 @@ public final class JsonShowcase {
     }
 
     void constructSection() {
-        JsonObject built = JsonObject.of(ordered(
+        JsonObject built = ordered(
                 "providers", JsonArray.of(List.of(
                         JsonString.of("SUN"),
                         JsonString.of("SunRsaSign"),
@@ -122,7 +122,7 @@ public final class JsonShowcase {
                 "version", JsonNumber.of(1),
                 "enabled", JsonBoolean.of(true),
                 "owner", JsonNull.of(),
-                "ratio", JsonNumber.of("0.25")));
+                "ratio", JsonNumber.of("0.25"));
 
         out("factory tree   -> " + built);
         out("providers[1]   -> " + built.get("providers").get(1).asString());
