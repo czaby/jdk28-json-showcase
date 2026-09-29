@@ -2,6 +2,9 @@
 # Build the JDK 28 image (unless SKIP_BUILD=1) and run a main class inside it.
 # Usage: ./run_in_docker.sh example.ClassName [args...]
 #
+# Host paths that exist as files are bind-mounted at /input/... and rewritten
+# so Java inside the container can read them (terraform plan, IAM policy, ADF).
+#
 # Must use `java --add-modules`, not `mvn exec:java`. exec:java runs in Maven's
 # JVM and does not see jdk.incubator.json (NoClassDefFoundError / module error).
 #
@@ -45,8 +48,26 @@ for var in AWS_REGION AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN 
   fi
 done
 
-echo "==> $CLASS${*:+ $*}"
-docker run --rm "${env_flags[@]+"${env_flags[@]}"}" "$IMAGE" \
+volume_flags=()
+java_args=()
+n=0
+for arg in "$@"; do
+  if [[ -f "$arg" ]]; then
+    abs="$(cd "$(dirname "$arg")" && pwd)/$(basename "$arg")"
+    dest="/input/${n}-$(basename "$arg")"
+    volume_flags+=(-v "$abs:$dest:ro")
+    java_args+=("$dest")
+    n=$((n + 1))
+  else
+    java_args+=("$arg")
+  fi
+done
+
+echo "==> $CLASS${java_args[*]:+ ${java_args[*]}}"
+docker run --rm \
+  "${env_flags[@]+"${env_flags[@]}"}" \
+  "${volume_flags[@]+"${volume_flags[@]}"}" \
+  "$IMAGE" \
   java --add-modules jdk.incubator.json \
     -cp "target/classes:target/dependency/*" \
-    "$CLASS" "$@"
+    "$CLASS" "${java_args[@]+"${java_args[@]}"}"
