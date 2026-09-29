@@ -2,6 +2,9 @@
 # Build the JDK 28 image (unless SKIP_BUILD=1) and run a main class inside it.
 # Usage: ./run_in_docker.sh example.ClassName [args...]
 #
+# Must use `java --add-modules`, not `mvn exec:java`. exec:java runs in Maven's
+# JVM and does not see jdk.incubator.json (NoClassDefFoundError / module error).
+#
 # Java mains read these when present. Edit here or export before calling:
 #   AWS_REGION=eu-central-1
 #   AWS_ACCESS_KEY_ID=AKIA_YOUR_ACCESS_KEY
@@ -42,11 +45,8 @@ for var in AWS_REGION AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN 
   fi
 done
 
-args=()
-if [[ "$#" -gt 0 ]]; then
-  args=(-Dexec.args="$*")
-fi
-
 echo "==> $CLASS${*:+ $*}"
 docker run --rm "${env_flags[@]+"${env_flags[@]}"}" "$IMAGE" \
-  mvn -q exec:java -Dexec.mainClass="$CLASS" "${args[@]+"${args[@]}"}"
+  java --add-modules jdk.incubator.json \
+    -cp "target/classes:target/dependency/*" \
+    "$CLASS" "$@"
