@@ -1,0 +1,5 @@
+{"type":"version","terraform":"1.9.8"}
+{"type":"planned_change","change":{"resource":{"addr":"aws_s3_bucket.logs"},"action":"create"}}
+{"type":"planned_change","change":{"resource":{"addr":"aws_iam_role.task"},"action":"update"}}
+{"type":"planned_change","change":{"resource":{"addr":"aws_instance.web"},"action":"replace"}}
+{"type":"change_summary","changes":{"add":2,"change":1,"remove":0,"operation":"plan"}}
