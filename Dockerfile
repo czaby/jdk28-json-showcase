@@ -15,4 +15,4 @@ COPY src ./src
 # Compile the demo at image-build time. Tests stay for run_tests.sh.
 RUN mvn -q -DskipTests compile
 
-CMD ["java", "--add-modules", "jdk.incubator.json", "-cp", "target/classes", "dev.czaby.jdk28json.JsonShowcase"]
+CMD ["java", "--add-modules", "jdk.incubator.json", "-cp", "target/classes", "example.JsonShowcase"]

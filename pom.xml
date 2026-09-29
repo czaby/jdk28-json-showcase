@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>dev.czaby</groupId>
+    <groupId>example</groupId>
     <artifactId>jdk28-json-showcase</artifactId>
     <version>1.0.0</version>
     <name>JDK 28 Simple JSON API showcase</name>
@@ -73,7 +73,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.1</version>
                 <configuration>
-                    <mainClass>dev.czaby.jdk28json.JsonShowcase</mainClass>
+                    <mainClass>example.JsonShowcase</mainClass>
                 </configuration>
             </plugin>
         </plugins>

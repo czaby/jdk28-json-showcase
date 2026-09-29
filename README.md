@@ -24,7 +24,7 @@ chmod +x run.sh run_tests.sh
 ./run.sh
 ```
 
-That builds `jdk28-json-showcase` and runs `JsonShowcase` in the container.
+That builds `jdk28-json-showcase` and runs `example.JsonShowcase` in the container.
 
 Tests:
 
@@ -42,13 +42,13 @@ docker run --rm jdk28-json-showcase
 docker run --rm jdk28-json-showcase mvn -q test
 ```
 
-Secrets Manager example (`SecretLogin`) uses the default AWS credential chain. CI does not invoke it:
+Secrets Manager example (`example.SecretLogin`) uses the default AWS credential chain. CI does not invoke it:
 
 ```bash
 docker run --rm \
   -e AWS_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN \
   jdk28-json-showcase \
-  mvn -q exec:java -Dexec.mainClass=dev.czaby.jdk28json.SecretLogin -Dexec.args='my/secret/id'
+  mvn -q exec:java -Dexec.mainClass=example.SecretLogin -Dexec.args='my/secret/id'
 ```
 
 ## CI
