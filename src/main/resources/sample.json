@@ -1,0 +1,15 @@
+{
+  "service": "weather",
+  "version": 1,
+  "active": true,
+  "owner": null,
+  "location": {
+    "city": "Berlin",
+    "lat": 52.52
+  },
+  "periods": [
+    { "name": "Today", "temperature": 14, "unit": "C" },
+    { "name": "Tonight", "temperature": 8, "unit": "C" },
+    { "name": "Tomorrow", "temperature": 16, "unit": "C" }
+  ]
+}
