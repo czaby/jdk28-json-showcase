@@ -11,41 +11,35 @@ Official references:
 
 ## Requirements
 
-- JDK **28** or later (early-access is fine) with the incubating module `jdk.incubator.json`
-- Maven 3.9+
+- Docker (the demo and tests run inside `openjdk:28-ea-jdk-slim`)
 
-Confirm the module is present:
-
-```bash
-java --list-modules | grep jdk.incubator.json
-```
-
-Download EA builds from https://jdk.java.net/28/
+The image installs Maven and compiles the project at build time. You do not need a local JDK 28.
 
 ## Run
 
+Demo:
+
 ```bash
-chmod +x run.sh
+chmod +x run.sh run_tests.sh
 ./run.sh
 ```
 
-That script checks for JDK 28+, runs the JUnit suite when Maven is installed, then prints the demo.
+That builds `jdk28-json-showcase` and runs `JsonShowcase` in the container.
 
-Without Maven:
+Tests:
 
 ```bash
-javac --release 28 --add-modules jdk.incubator.json \
-  -d target/classes \
-  src/main/java/dev/czaby/jdk28json/*.java
-
-java --add-modules jdk.incubator.json -cp target/classes dev.czaby.jdk28json.JsonShowcase
+./run_tests.sh
 ```
 
-With Maven:
+Override the image name with `IMAGE=my-tag ./run.sh`.
+
+Manual Docker:
 
 ```bash
-mvn -q test
-java --add-modules jdk.incubator.json -cp target/classes dev.czaby.jdk28json.JsonShowcase
+docker build -t jdk28-json-showcase .
+docker run --rm jdk28-json-showcase
+docker run --rm jdk28-json-showcase mvn -q test
 ```
 
 ## What the demo covers

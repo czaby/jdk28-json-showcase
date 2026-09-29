@@ -1,0 +1,11 @@
+# Build artifacts and VCS metadata stay off the image.
+target/
+.git/
+.gitignore
+.idea/
+*.iml
+.vscode/
+.DS_Store
+README.md
+run.sh
+run_tests.sh

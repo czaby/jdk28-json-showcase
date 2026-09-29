@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build the JDK 28 image and run the JEP 540 showcase inside Docker.
+# Build the JDK 28 image and run the JUnit suite inside Docker.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -15,5 +15,5 @@ fi
 echo "==> docker build ${IMAGE}"
 docker build -t "$IMAGE" .
 
-echo "==> docker run demo"
-docker run --rm "$IMAGE"
+echo "==> docker run mvn test"
+docker run --rm "$IMAGE" mvn -q test
