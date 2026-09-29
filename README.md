@@ -51,6 +51,15 @@ docker run --rm \
   mvn -q exec:java -Dexec.mainClass=example.SecretLogin -Dexec.args='my/secret/id'
 ```
 
+Jira example (`example.JiraTicket`) calls REST v2 for `ABC-123` unless you pass another key. Needs `JIRA_BASE_URL`, `JIRA_EMAIL`, and `JIRA_API_TOKEN`. CI does not invoke it:
+
+```bash
+docker run --rm \
+  -e JIRA_BASE_URL -e JIRA_EMAIL -e JIRA_API_TOKEN \
+  jdk28-json-showcase \
+  mvn -q exec:java -Dexec.mainClass=example.JiraTicket -Dexec.args='ABC-123'
+```
+
 ## CI
 
 GitHub Actions (`.github/workflows/ci.yml`) builds the same image on every push and pull request, then runs `mvn test` and the showcase.
@@ -70,6 +79,7 @@ GitHub Actions (`.github/workflows/ci.yml`) builds the same image on every push 
 | `JsonParseException` (syntax + duplicate names) | parse errors |
 | `JsonValueException` (wrong type / missing member) | access errors |
 | Secrets Manager `username` / `password` | `SecretLogin` |
+| Jira labels and last comment | `JiraTicket` |
 
 ## Maven notes
 
