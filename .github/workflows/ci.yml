@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  docker:
+    name: Tests and showcase
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build JDK 28 image
+        run: docker build -t jdk28-json-showcase .
+
+      - name: Run unit tests
+        run: docker run --rm jdk28-json-showcase mvn -q test
+
+      - name: Run showcase
+        run: docker run --rm jdk28-json-showcase

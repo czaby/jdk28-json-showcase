@@ -42,6 +42,10 @@ docker run --rm jdk28-json-showcase
 docker run --rm jdk28-json-showcase mvn -q test
 ```
 
+## CI
+
+GitHub Actions (`.github/workflows/ci.yml`) builds the same image on every push and pull request, then runs `mvn test` and the showcase.
+
 ## What the demo covers
 
 | Feature | Where |
