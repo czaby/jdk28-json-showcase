@@ -60,6 +60,15 @@ docker run --rm \
   mvn -q exec:java -Dexec.mainClass=example.JiraTicket -Dexec.args='ABC-123'
 ```
 
+CloudWatch example (`example.CloudWatchErrors`) takes the newest stream in a log group and filters for `ERROR`, `WARNING`, or `Exception`. Pass the group as the argument or set `LOG_GROUP`. CI does not invoke it:
+
+```bash
+docker run --rm \
+  -e AWS_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN \
+  jdk28-json-showcase \
+  mvn -q exec:java -Dexec.mainClass=example.CloudWatchErrors -Dexec.args='/aws/lambda/demo'
+```
+
 ## CI
 
 GitHub Actions (`.github/workflows/ci.yml`) builds the same image on every push and pull request, then runs `mvn test` and the showcase.
@@ -80,7 +89,8 @@ GitHub Actions (`.github/workflows/ci.yml`) builds the same image on every push 
 | `JsonValueException` (wrong type / missing member) | access errors |
 | Secrets Manager `username` / `password` | `SecretLogin` |
 | Jira labels and last comment | `JiraTicket` |
+| CloudWatch latest stream + ERROR/WARNING/Exception | `CloudWatchErrors` |
 
 ## Maven notes
 
-The JSON API lives in the JDK (`--add-modules jdk.incubator.json`). JUnit 5 is for tests. `software.amazon.awssdk:secretsmanager` is only for `SecretLogin`.
+The JSON API lives in the JDK (`--add-modules jdk.incubator.json`). JUnit 5 is for tests. AWS SDK modules are only for `SecretLogin` and `CloudWatchErrors`.
