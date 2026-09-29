@@ -1,0 +1,23 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AdminLike",
+      "Effect": "Allow",
+      "Action": "*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "S3Write",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
+      "Resource": ["arn:aws:s3:::app-logs", "arn:aws:s3:::app-logs/*"]
+    },
+    {
+      "Sid": "DenyDeleteBucket",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::app-logs"
+    }
+  ]
+}

@@ -42,6 +42,23 @@ docker run --rm jdk28-json-showcase
 docker run --rm jdk28-json-showcase mvn -q test
 ```
 
+JSON-heavy examples (bundled sample documents; pass a file to override):
+
+```bash
+docker run --rm jdk28-json-showcase java --add-modules jdk.incubator.json -cp target/classes example.JiraAdf
+docker run --rm jdk28-json-showcase java --add-modules jdk.incubator.json -cp target/classes example.TerraformPlan
+docker run --rm jdk28-json-showcase java --add-modules jdk.incubator.json -cp target/classes example.IamPolicy
+```
+
+`JiraAdf` can also flatten the last comment of a live issue (API v3 ADF body):
+
+```bash
+docker run --rm \
+  -e JIRA_BASE_URL -e JIRA_EMAIL -e JIRA_API_TOKEN \
+  jdk28-json-showcase \
+  java --add-modules jdk.incubator.json -cp target/classes example.JiraAdf ABC-123
+```
+
 Secrets Manager example (`example.SecretLogin`) uses the default AWS credential chain. CI does not invoke it:
 
 ```bash
@@ -51,7 +68,7 @@ docker run --rm \
   mvn -q exec:java -Dexec.mainClass=example.SecretLogin -Dexec.args='my/secret/id'
 ```
 
-Jira example (`example.JiraTicket`) calls REST v2 for `ABC-123` unless you pass another key. Needs `JIRA_BASE_URL`, `JIRA_EMAIL`, and `JIRA_API_TOKEN`. CI does not invoke it:
+Jira labels example (`example.JiraTicket`) calls REST v2 for `ABC-123` unless you pass another key. Needs `JIRA_BASE_URL`, `JIRA_EMAIL`, and `JIRA_API_TOKEN`. CI does not invoke it:
 
 ```bash
 docker run --rm \
@@ -80,6 +97,9 @@ GitHub Actions (`.github/workflows/ci.yml`) builds the same image on every push 
 | `JsonValueException` (wrong type / missing member) | access errors |
 | Secrets Manager `username` / `password` | `SecretLogin` |
 | Jira labels and last comment | `JiraTicket` |
+| Flatten Jira ADF `content` trees | `JiraAdf` |
+| `terraform show -json` resource_changes | `TerraformPlan` |
+| IAM `Action`/`Resource` string-or-array | `IamPolicy` |
 
 ## Maven notes
 

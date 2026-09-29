@@ -1,0 +1,45 @@
+{
+  "format_version": "1.2",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.logs",
+      "type": "aws_s3_bucket",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "bucket": "app-logs", "force_destroy": false },
+        "after_unknown": { "arn": true, "id": true }
+      }
+    },
+    {
+      "address": "aws_iam_role.task",
+      "type": "aws_iam_role",
+      "change": {
+        "actions": ["update"],
+        "before": { "name": "task", "max_session_duration": 3600 },
+        "after": { "name": "task", "max_session_duration": 7200 },
+        "after_unknown": {}
+      }
+    },
+    {
+      "address": "aws_instance.web",
+      "type": "aws_instance",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": { "instance_type": "t3.small" },
+        "after": { "instance_type": "t3.medium" },
+        "after_unknown": { "id": true, "private_ip": true }
+      }
+    },
+    {
+      "address": "aws_cloudwatch_log_group.app",
+      "type": "aws_cloudwatch_log_group",
+      "change": {
+        "actions": ["no-op"],
+        "before": { "name": "/app" },
+        "after": { "name": "/app" },
+        "after_unknown": {}
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "type": "doc",
+  "version": 1,
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [
+        { "type": "text", "text": "Please bump " },
+        { "type": "text", "text": "timeout", "marks": [{ "type": "code" }] },
+        { "type": "text", "text": " to 30s." }
+      ]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Check the ALB target group." }]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                { "type": "text", "text": "Re-run pipeline " },
+                { "type": "text", "text": "deploy-prod", "marks": [{ "type": "strong" }] },
+                { "type": "hardBreak" },
+                { "type": "text", "text": "then ping #ops." }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
