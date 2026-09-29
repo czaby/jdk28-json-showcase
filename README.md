@@ -21,10 +21,27 @@ The image installs Maven and compiles the project at build time. You do not need
 chmod +x run.sh run_tests.sh run_in_docker.sh run_*.sh
 ```
 
-All examples (bundled samples; live Jira/AWS only if env is set):
+All examples (bundled samples; live Jira/AWS only after you replace the placeholders in the scripts):
 
 ```bash
 ./run_all_examples.sh
+```
+
+Credentials live in the scripts as defaults you can edit. Shell exports win if already set.
+
+```bash
+# run_jira_ticket.sh / run_jira_adf.sh / run_all_examples.sh
+JIRA_BASE_URL=https://your-site.atlassian.net
+JIRA_EMAIL=you@example.com
+JIRA_API_TOKEN=your-jira-api-token
+JIRA_ISSUE=ABC-123
+
+# run_secret_login.sh / run_all_examples.sh
+AWS_REGION=eu-central-1
+AWS_ACCESS_KEY_ID=AKIA_YOUR_ACCESS_KEY
+AWS_SECRET_ACCESS_KEY=your-secret-access-key
+AWS_SESSION_TOKEN=
+SECRET_ID=app/demo/login
 ```
 
 One class at a time:
@@ -35,32 +52,12 @@ One class at a time:
 ./run_jira_adf.sh             # optional: ISSUE-KEY or a JSON file
 ./run_terraform_plan.sh       # optional: terraform-show.json
 ./run_iam_policy.sh           # optional: policy.json
-./run_jira_ticket.sh          # default ABC-123; needs JIRA_*
-./run_secret_login.sh my/id   # needs AWS credentials
+./run_jira_ticket.sh          # default ABC-123; needs real JIRA_*
+./run_secret_login.sh         # default app/demo/login; needs real AWS_*
 ./run_tests.sh
 ```
 
 `run_in_docker.sh` is the shared runner. `SKIP_BUILD=1` reuses an already-built `IMAGE` (default `jdk28-json-showcase`).
-
-Manual Docker:
-
-```bash
-docker build -t jdk28-json-showcase .
-docker run --rm jdk28-json-showcase
-docker run --rm jdk28-json-showcase mvn -q test
-```
-
-`JiraAdf` live issue (API v3 ADF body):
-
-```bash
-JIRA_BASE_URL=... JIRA_EMAIL=... JIRA_API_TOKEN=... ./run_jira_adf.sh ABC-123
-```
-
-Secrets Manager:
-
-```bash
-AWS_REGION=... AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... ./run_secret_login.sh my/secret/id
-```
 
 ## CI
 

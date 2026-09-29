@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 # Build the JDK 28 image (unless SKIP_BUILD=1) and run a main class inside it.
 # Usage: ./run_in_docker.sh example.ClassName [args...]
+#
+# Java mains read these when present. Edit here or export before calling:
+#   AWS_REGION=eu-central-1
+#   AWS_ACCESS_KEY_ID=AKIA_YOUR_ACCESS_KEY
+#   AWS_SECRET_ACCESS_KEY=your-secret-access-key
+#   AWS_SESSION_TOKEN=           # optional, SSO/session
+#   AWS_PROFILE=default          # optional; Docker still needs the key env vars
+#   JIRA_BASE_URL=https://your-site.atlassian.net
+#   JIRA_EMAIL=you@example.com
+#   JIRA_API_TOKEN=your-jira-api-token
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -26,8 +36,8 @@ fi
 
 env_flags=()
 for var in AWS_REGION AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_PROFILE \
-           JIRA_BASE_URL JIRA_EMAIL JIRA_API_TOKEN LOG_GROUP; do
-  if [[ -n "${var:-}" && -n "${!var:-}" ]]; then
+           JIRA_BASE_URL JIRA_EMAIL JIRA_API_TOKEN; do
+  if [[ -n "${!var:-}" ]]; then
     env_flags+=(-e "$var")
   fi
 done
