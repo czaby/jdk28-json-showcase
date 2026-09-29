@@ -1,6 +1,6 @@
 # JDK 28 Simple JSON API showcase
 
-Small, dependency-free demo of **JEP 540** (`jdk.incubator.json`) as it ships in JDK 28 early-access builds.
+Small demo of **JEP 540** (`jdk.incubator.json`) as it ships in JDK 28 early-access builds.
 
 The API is an incubator. It can still change. It is not a Jackson / Gson replacement: no data binding, no streaming, no comments, no trailing commas.
 
@@ -42,6 +42,15 @@ docker run --rm jdk28-json-showcase
 docker run --rm jdk28-json-showcase mvn -q test
 ```
 
+Secrets Manager example (`SecretLogin`) uses the default AWS credential chain. CI does not invoke it:
+
+```bash
+docker run --rm \
+  -e AWS_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN \
+  jdk28-json-showcase \
+  mvn -q exec:java -Dexec.mainClass=dev.czaby.jdk28json.SecretLogin -Dexec.args='my/secret/id'
+```
+
 ## CI
 
 GitHub Actions (`.github/workflows/ci.yml`) builds the same image on every push and pull request, then runs `mvn test` and the showcase.
@@ -60,9 +69,8 @@ GitHub Actions (`.github/workflows/ci.yml`) builds the same image on every push 
 | `JsonValue.toString()` vs `Json.toDisplayString` | generation |
 | `JsonParseException` (syntax + duplicate names) | parse errors |
 | `JsonValueException` (wrong type / missing member) | access errors |
+| Secrets Manager `username` / `password` | `SecretLogin` |
 
 ## Maven notes
 
-There is no Maven artifact for this API. It lives in the JDK.
-
-The POM only adds JUnit 5 for tests. Compiler and Surefire both pass `--add-modules jdk.incubator.json`.
+The JSON API lives in the JDK (`--add-modules jdk.incubator.json`). JUnit 5 is for tests. `software.amazon.awssdk:secretsmanager` is only for `SecretLogin`.
