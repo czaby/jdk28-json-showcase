@@ -17,22 +17,30 @@ The image installs Maven and compiles the project at build time. You do not need
 
 ## Run
 
-Demo:
-
 ```bash
-chmod +x run.sh run_tests.sh
-./run.sh
+chmod +x run.sh run_tests.sh run_in_docker.sh run_*.sh
 ```
 
-That builds `jdk28-json-showcase` and runs `example.JsonShowcase` in the container.
-
-Tests:
+All examples (bundled samples; live Jira/AWS only if env is set):
 
 ```bash
+./run_all_examples.sh
+```
+
+One class at a time:
+
+```bash
+./run.sh                      # example.JsonShowcase (same as ./run_json_showcase.sh)
+./run_json_showcase.sh
+./run_jira_adf.sh             # optional: ISSUE-KEY or a JSON file
+./run_terraform_plan.sh       # optional: terraform-show.json
+./run_iam_policy.sh           # optional: policy.json
+./run_jira_ticket.sh          # default ABC-123; needs JIRA_*
+./run_secret_login.sh my/id   # needs AWS credentials
 ./run_tests.sh
 ```
 
-Override the image name with `IMAGE=my-tag ./run.sh`.
+`run_in_docker.sh` is the shared runner. `SKIP_BUILD=1` reuses an already-built `IMAGE` (default `jdk28-json-showcase`).
 
 Manual Docker:
 
@@ -42,39 +50,16 @@ docker run --rm jdk28-json-showcase
 docker run --rm jdk28-json-showcase mvn -q test
 ```
 
-JSON-heavy examples (bundled sample documents; pass a file to override):
+`JiraAdf` live issue (API v3 ADF body):
 
 ```bash
-docker run --rm jdk28-json-showcase java --add-modules jdk.incubator.json -cp target/classes example.JiraAdf
-docker run --rm jdk28-json-showcase java --add-modules jdk.incubator.json -cp target/classes example.TerraformPlan
-docker run --rm jdk28-json-showcase java --add-modules jdk.incubator.json -cp target/classes example.IamPolicy
+JIRA_BASE_URL=... JIRA_EMAIL=... JIRA_API_TOKEN=... ./run_jira_adf.sh ABC-123
 ```
 
-`JiraAdf` can also flatten the last comment of a live issue (API v3 ADF body):
+Secrets Manager:
 
 ```bash
-docker run --rm \
-  -e JIRA_BASE_URL -e JIRA_EMAIL -e JIRA_API_TOKEN \
-  jdk28-json-showcase \
-  java --add-modules jdk.incubator.json -cp target/classes example.JiraAdf ABC-123
-```
-
-Secrets Manager example (`example.SecretLogin`) uses the default AWS credential chain. CI does not invoke it:
-
-```bash
-docker run --rm \
-  -e AWS_REGION -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN \
-  jdk28-json-showcase \
-  mvn -q exec:java -Dexec.mainClass=example.SecretLogin -Dexec.args='my/secret/id'
-```
-
-Jira labels example (`example.JiraTicket`) calls REST v2 for `ABC-123` unless you pass another key. Needs `JIRA_BASE_URL`, `JIRA_EMAIL`, and `JIRA_API_TOKEN`. CI does not invoke it:
-
-```bash
-docker run --rm \
-  -e JIRA_BASE_URL -e JIRA_EMAIL -e JIRA_API_TOKEN \
-  jdk28-json-showcase \
-  mvn -q exec:java -Dexec.mainClass=example.JiraTicket -Dexec.args='ABC-123'
+AWS_REGION=... AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... ./run_secret_login.sh my/secret/id
 ```
 
 ## CI

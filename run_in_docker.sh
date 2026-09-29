@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Build the JDK 28 image (unless SKIP_BUILD=1) and run a main class inside it.
+# Usage: ./run_in_docker.sh example.ClassName [args...]
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT"
+
+IMAGE="${IMAGE:-jdk28-json-showcase}"
+CLASS="${1:-}"
+if [[ -z "$CLASS" ]]; then
+  echo "usage: $0 example.ClassName [args...]" >&2
+  exit 2
+fi
+shift
+
+if ! command -v docker >/dev/null 2>&1; then
+  echo "error: docker is required" >&2
+  exit 1
+fi
+
+if [[ "${SKIP_BUILD:-}" != 1 ]]; then
+  echo "==> docker build ${IMAGE}"
+  docker build -t "$IMAGE" .
+fi
+
+env_flags=()
+for var in AWS_REGION AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN AWS_PROFILE \
+           JIRA_BASE_URL JIRA_EMAIL JIRA_API_TOKEN LOG_GROUP; do
+  if [[ -n "${var:-}" && -n "${!var:-}" ]]; then
+    env_flags+=(-e "$var")
+  fi
+done
+
+args=()
+if [[ "$#" -gt 0 ]]; then
+  args=(-Dexec.args="$*")
+fi
+
+echo "==> $CLASS${*:+ $*}"
+docker run --rm "${env_flags[@]+"${env_flags[@]}"}" "$IMAGE" \
+  mvn -q exec:java -Dexec.mainClass="$CLASS" "${args[@]+"${args[@]}"}"
